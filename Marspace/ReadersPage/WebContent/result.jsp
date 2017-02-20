@@ -255,7 +255,7 @@
 			</tr>
 		</thead>
 	</table>
-	</div>>
+	</div>
 	<!-- 数据表的工具栏 -->
 	<div id="toolbar" style="padding:5px;height:auto">
 		<div>
