@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<link rel="stylesheet" type="text/css" href="css/themes/default/easyui.css">
+	<link rel="stylesheet" type="text/css" href="css/themes/icon.css">
+	<link rel="stylesheet" type="text/css" href="css/demo.css">
+	
+	<script type="text/javascript" src="Js/jquery.min.js"></script>
+	<script type="text/javascript" src="Js/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="Js/Pagefilter.js"></script>
+	<script type="text/javascript">
+	$(function() {  
+		$('#dg').datagrid('getPager').pagination({  
+		        pageSize: 10, //每页显示的记录条数，默认为10    
+		        pageList: [10, 15, 20, 25], //可以设置每页记录条数的列表  
+		        onSelectPage: function(pageNumber, pageSize) {  
+		        SearchTrainee();//每次更换页面时触发更改   
+	    	}  
+	   	});  
+	});
+	
+	function SearchTrainee() {  
+        var companyCode =$('#hiddenCompanyCode').val();   
+        var name = $('#txtName').val();  
+        if (companyCode== "") companyCode = "000";  
+        var dg =$('#dg');  
+        var opts =dg.datagrid('options');  
+        var pager =dg.datagrid('getPager');  
+        var _pageNumber =opts.pageNumber;  
+        var _pageSize =opts.pageSize;  
+        //异步获取数据到javascript对象，入参为查询条件和页码信息  
+        $.post('Ajax/GetTraineeHandler.ashx', {  
+            Name: name,  
+            CompanyCode:companyCode,  
+            pageNumber:_pageNumber,  
+            pageSize:_pageSize  
+        }, function(data) {  
+        //注意此处从数据库传来的data数据有记录总行数的total列  
+           var total = JSON.parse(data).rows[0].total;  
+           $('#tableTrainee').datagrid('loadData', JSON.parse(data));  
+           pager.pagination({  
+           //更新pagination的导航列表各参数  
+           total:total,//总数  
+           pageSize: _pageSize,//行数  
+           pageNumber: _pageNumber//页数  
+            });  
+});  
+    }  
+	</script>
+<title>Insert title here</title>
+</head>
+<body>
+	<!-- 数据表，没有设置url -->
+	<table id="dg" title="My Users" class="easyui-datagrid" style="width:700px;height:250px"
+			url="get_users.php"
+			toolbar="#toolbar" pagination="true"
+			rownumbers="true" fitColumns="true" singleSelect="true">
+		<thead>
+			<tr>
+				<th field="firstname" width="50">First Name</th>
+				<th field="lastname" width="50">Last Name</th>
+				<th field="phone" width="50">Phone</th>
+				<th field="email" width="50">Email</th>
+			</tr>
+		</thead>
+	</table>
+</body>
+</html>

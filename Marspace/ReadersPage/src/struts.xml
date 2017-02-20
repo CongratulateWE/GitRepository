@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.1//EN"
+	"http://struts.apache.org/dtds/struts-2.1.dtd">
+
+<struts>
+
+    <constant name="struts.enable.DynamicMethodInvocation" value="false" />
+    <constant name="struts.devMode" value="true" />
+
+    <package name="default" namespace="/" extends="json-default">
+
+        <default-action-ref name="get" />
+
+        <global-results>
+            <result name="error">/error.jsp</result>
+        </global-results>
+
+        <global-exception-mappings>
+            <exception-mapping exception="java.lang.Exception" result="error"/>
+        </global-exception-mappings>
+
+        <action name="index">
+            <result type="redirectAction">
+                <param name="actionName">HelloWorld</param>
+                <param name="namespace">/example</param>
+            </result>
+        </action>
+      	
+        <action name="hello" class="action.getReadersAction">
+        	<result>
+        		/Hello.jsp
+        	</result>
+        </action>
+        <action name = "get" class="action.getReadersAction">
+        	<result name="success">
+        		/SQL_Select.jsp?ReaderList = ${ReaderList}
+        	</result>
+        </action>
+        <action name="testByAction" class="action.getReadersAction"  method="testByAction">
+				<result name="success" type="json">
+					<param name="root">dataMap</param>
+				</result>
+		</action>
+		<action name="testByjson" class="action.getReadersAction"  method="json">
+				<result name="success" type="json">
+					<param name="root">dataMap</param>
+				</result>
+		</action>
+		<action name="searchId" class="action.getReadersAction"  method="selectByid">
+				<result name="success" type="json">
+					<param name="root">dataMap</param>
+				</result>
+		</action>
+		<action name = "myjsp" class = "action.getReadersAction" method = "testByJSP">
+			<result>
+				/testJson.jsp
+			</result>
+		</action>
+		<action name = "testpage" class = "action.getReadersAction" method = "pagesearch">
+			<result name="success" type="json">
+				<param name="root">dataMap</param>
+			</result>
+		</action>
+		
+		<!--Oracle页搜索 -->
+		<action name = "searchPageAction" class = "action.getReadersAction" method = "searchPage">
+			<result name="success" type="json">
+				<param name="root">josnStr</param>
+			</result>
+		</action>
+		
+		<!--删除Action -->
+		<action name = "deleteAction" class = "action.DeleteReaders">
+			<result name="success" type="json">
+				<param name="root">dataMap</param>
+			</result>
+		</action>
+		
+		<!--添加用户Action -->
+		<action name = "insertAction" class = "action.InsertReadersAction">
+			<result name="success">/Hello.jsp</result>
+			<result name="error">/error.jsp</result>
+		</action>
+		
+		<!--照片-->
+		<action name="getPhotoAction" class = "action.PhotoAction">
+			<result name="success" type="stream">
+				<param name="contentType">image/jpeg</param>  
+                <param name="inputName">photo</param>  
+                <param name="bufferSize">1024</param>  
+			</result>
+			<result name="error">
+				/error.jsp
+			</result>
+		</action>
+		
+		<action name="uploadPhotoAction" class="action.PhotoAction"  method = "uploadPhoto">
+			<result name="success">
+				<param name="root">lib_id</param>
+			</result>
+			<result name="error">
+				/error.jsp
+			</result>
+		</action>
+		
+		<!--显示用户详细信息 -->
+		<action name="showDetailAction" class="action.getReadersAction" method="showDetails">
+			<result name="success">
+				/readerDetail.jsp
+			</result>
+		</action>
+		
+		<!--登录Action-->
+		<action name="login" class="action.loginAction">
+		
+			<result name="root">
+				/Welcome.jsp
+			</result>
+			<result name="normal">
+				/Welcome.jsp
+			</result>
+			<result name="input">
+				/Login.jsp
+			</result>
+		</action>
+		
+		<!-- 学生补卡-->
+		<action name="addcard" class="action.AddCardAction">
+			<result name="success" type="json">
+				<param name="root">dataMap</param>
+			</result>
+		</action>
+		
+		<action name="checkUser" class="action.AddCardAction" method="check">
+			<result name="success" type="json">
+				<param name="root">dataMap</param>
+			</result>
+		</action>
+    </package>
+    
+    <package name="mysql" namespace="/mysql" extends="json-default">
+    	<!-- 页搜索 -->
+		<action name = "searchPageAction" class = "action.MysqlAction" method = "searchPage">
+			<result name="success" type="json">
+				<param name="root">josnStr</param>
+			</result>
+		</action>
+		<!-- id搜索-->
+		<action name="searchId" class="action.MysqlAction"  method="selectByid">
+				<result name="success" type="json">
+					<param name="root">dataMap</param>
+				</result>
+		</action>
+		<!-- 删除 -->
+		<action name = "deleteAction" class = "action.MysqlDeleteAction">
+			<result name="success" type="json">
+				<param name="root">dataMap</param>
+			</result>
+		</action>
+		<!-- 修改 -->
+		<action name = "update" class = "action.MysqlAction" method="updateRecord">
+			<result name="success" type="json">
+				<param name="root">dataMap</param>
+			</result>
+		</action>
+		
+		<!-- 插入 -->
+		<action name = "insert" class = "action.MysqlInsertAction">
+			<result name = "success">/Hello.jsp</result>
+		</action>
+		
+		<!--显示用户详细信息 -->
+		<action name="showDetail" class="action.MysqlAction" method="showDetails">
+			<result name="success">
+				/mysql/studentDetail.jsp
+			</result>
+		</action>
+		
+		<!--照片-->
+		<action name="getPhotoAction" class = "action.MysqlAction">
+			<result name="success" type="stream">
+				<param name="contentType">image/jpeg</param>  
+                <param name="inputName">photo</param>  
+                <param name="bufferSize">1024</param>  
+			</result>
+			<result name="error">
+				/error.jsp
+			</result>
+		</action>
+    </package>
+    <!--include file="example.xml"/-->
+
+    <!-- Add packages here -->
+</struts>
